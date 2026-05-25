@@ -544,6 +544,143 @@ const BANK_DATA = {
     currency: "AUD→USD",
     notes: "호주 1위 은행. AUD→USD 환산 (0.668). FY는 6월 결산. 리테일 매출 추정치.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "high" }
+  },
+
+  /* ============================================================
+   * ADDITIONAL RESEARCHED BANKS
+   * ============================================================ */
+
+  "UOB": {
+    fullName: "United Overseas Bank Limited",
+    aliases: ["United Overseas Bank", "유오비", "UOB Bank", "UOB Group"],
+    ticker: "U11 / SGX",
+    country: "Singapore",
+    region: "Asia-Pacific",
+    flag: "🇸🇬",
+    // Source: UOB Group FY2024 Annual Report & 4Q2024 Results (Feb 2025)
+    totalAssets: 397309,           // SGD ~533.3B × 0.745 SGD/USD ≈ $397,309M (FY2024 est.)
+    retailRevenue: 4247,           // Group Retail est. ~40% of total income SGD 14.3B × 0.745 ≈ $4,247M
+    retailCustomers: 8400000,      // 8.4M retail customers in ASEAN (FY2024 공식 발표)
+    sellingPrice: null,
+    irSource: "UOB Group FY2024 Annual Report & 4Q2024 Results, Feb 2025",
+    irYear: 2024,
+    currency: "SGD→USD",
+    notes: "동남아 주요 은행. SGD→USD 환산 (0.745). FY2024 기록 순이익 SGD 6.0B (+6%). 신규 고객 85만명 (절반 디지털 채널). 리테일 매출은 그룹 내 추정치.",
+    dataConfidence: { assets: "medium", revenue: "medium", customers: "high" }
+  },
+
+  "Alinma Bank": {
+    fullName: "Alinma Bank",
+    aliases: ["알린마", "알린마은행", "Alinma", "البنك الأهلي السعودي"],
+    ticker: "1150 / TADAWUL",
+    country: "Saudi Arabia",
+    region: "Middle East",
+    flag: "🇸🇦",
+    // Source: Alinma Bank 2024 Annual Financial Results (Jan 2025)
+    totalAssets: 73913,            // SAR 276,827M × 0.267 SAR/USD ≈ $73,913M (FY2024)
+    retailRevenue: 554,            // 리테일 대출 비중 24% × 융자수익 SAR 8,649M × 0.267 ≈ $554M (est.)
+    retailCustomers: 4670000,      // ~467만 고객 (FY2024); 2025년 3월 기준 580만명
+    sellingPrice: null,
+    irSource: "Alinma Bank 2024 Annual Financial Results, Jan 2025 / Q4 2024 Earnings",
+    irYear: 2024,
+    currency: "SAR→USD",
+    notes: "사우디아라비아 이슬람 은행. SAR→USD 환산 (3.75 SAR = 1 USD). FY2024 순이익 SAR 5,832M (+20.5%). 고객예금 SAR 210,545M (+12.1%). 2025 사우디 최우수 리테일은행(Global Economics 선정).",
+    dataConfidence: { assets: "high", revenue: "medium", customers: "high" }
+  },
+
+  "VP Bank AG": {
+    fullName: "VP Bank AG",
+    aliases: ["VP Bank", "Verwaltungs- und Privat-Bank", "리히텐슈타인VP은행"],
+    ticker: "VPBN.SW",
+    country: "Liechtenstein",
+    region: "Europe",
+    flag: "🇱🇮",
+    // Source: VP Bank AG Annual Report 2024
+    totalAssets: 11872,            // CHF 10.6B × 1.12 CHF/USD ≈ $11,872M (FY2024)
+    retailRevenue: 370,            // 영업수익 CHF 330.5M × 1.12 ≈ $370M (FY2024; -9.3% YoY)
+    retailCustomers: null,         // 프라이빗 뱅킹 중심; 고객 자산 CHF 56.4B
+    sellingPrice: null,
+    irSource: "VP Bank AG Annual Report 2024, Mar 2025",
+    irYear: 2024,
+    currency: "CHF→USD",
+    notes: "리히텐슈타인 사립 프라이빗 뱅크. CHF→USD 환산 (1.12). 운용자산 CHF 56.4B. FY2024 그룹 순이익 CHF 18.5M. 직원 945명. 고객예금 CHF 8.9B, 대출 CHF 5.9B.",
+    dataConfidence: { assets: "high", revenue: "high", customers: null }
+  },
+
+  "VPBank Vietnam": {
+    fullName: "Vietnam Prosperity Joint Stock Commercial Bank (VPBank)",
+    aliases: ["VPBank", "베트남번영은행", "VPB", "Vietnam Prosperity Bank", "VP Bank Vietnam"],
+    ticker: "VPB.VN / HM:VPB",
+    country: "Vietnam",
+    region: "Asia-Pacific",
+    flag: "🇻🇳",
+    // Source: VPBank Annual Report 2024
+    totalAssets: 36307,            // VND 923.85T × 0.0000393 VND/USD ≈ $36,307M (FY2024)
+    retailRevenue: 2700,           // 총 영업수익 추정 ~$2.7B (리테일 중심 포트폴리오)
+    retailCustomers: 10000000,     // ~1,000만 리테일 고객 (est.; FE Credit 제외)
+    sellingPrice: null,
+    irSource: "VPBank Annual Report 2024 (Vietnam Prosperity Joint Stock Commercial Bank)",
+    irYear: 2024,
+    currency: "VND→USD",
+    notes: "베트남 주요 상업은행. VND→USD 환산 (0.0000393). FY2024 자산 VND 923.85T (+13.0%). 4Q24 세전이익 VND 6.1T (+85% YoY). 소비자금융 FE Credit 지분은 SMBC에 매각.",
+    dataConfidence: { assets: "high", revenue: "medium", customers: "medium" }
+  },
+
+  "SMCC": {
+    fullName: "Sumitomo Mitsui Card Company, Limited",
+    aliases: ["三井住友カード", "스미토모미쓰이카드", "SMBC Card", "Sumitomo Mitsui Card", "住友三井カード"],
+    ticker: "SMFG 계열사 (비상장)",
+    country: "Japan",
+    region: "Asia-Pacific",
+    flag: "🇯🇵",
+    // Source: Sumitomo Mitsui Card 業績データ (smbc-card.com) / SMFG FY2024 Disclosure
+    totalAssets: null,             // 단독 자산 미공개; 모회사 SMFG 총자산 ¥292.2T (FY2024)
+    retailRevenue: 4476,           // 営業収益 ¥678.05B × 0.0066 ≈ $4,476M (FY ended Mar 2025)
+    retailCustomers: 36150000,     // 3,615만 카드 회원 (SMBC Finance Service 포함, 2024년 3월 기준)
+    sellingPrice: null,
+    irSource: "Sumitomo Mitsui Card 業績データ (smbc-card.com) / SMFG FY2024 Annual Disclosure",
+    irYear: 2024,
+    currency: "JPY→USD",
+    notes: "SMFG(三井住友フィナンシャルグループ) 100% 자회사. JPY→USD 환산 (0.0066). 회원수 3,615만명. 영업수익 ¥678B (FY ended Mar 2025). SMFG 그룹 신용카드 사업 핵심.",
+    dataConfidence: { assets: null, revenue: "high", customers: "high" }
+  },
+
+  "SCBX": {
+    fullName: "SCB X Public Company Limited (Siam Commercial Bank Group)",
+    aliases: ["SCB", "Siam Commercial Bank", "사이암상업은행", "SCB X", "태국SCB"],
+    ticker: "SCB.BK / SCBX.BK",
+    country: "Thailand",
+    region: "Asia-Pacific",
+    flag: "🇹🇭",
+    // Source: SCB X Public Company Limited 4Q2024 Results (Jan 2025)
+    totalAssets: 94149,            // THB ~3,487B × 0.027 THB/USD ≈ $94,149M (FY2024 est.)
+    retailRevenue: 4655,           // 총 수익 THB 172.4B × 0.027 ≈ $4,655M (그룹 전체, FY2024)
+    retailCustomers: 17000000,     // ~1,700만 리테일 고객 (SCB 은행 기준)
+    sellingPrice: null,
+    irSource: "SCB X Public Company Limited 4Q2024 Results & Annual Report 2024, Jan 2025",
+    irYear: 2024,
+    currency: "THB→USD",
+    notes: "태국 최대 상업은행그룹 지주사. THB→USD 환산 (0.027). FY2024 순이익 THB 43,943M (+1.0%). NII THB 129,424M (+3.8%). 계열사: SCB 10X, CardX, InnovestX 등.",
+    dataConfidence: { assets: "medium", revenue: "medium", customers: "high" }
+  },
+
+  "Lloyds Banking Group": {
+    fullName: "Lloyds Banking Group plc",
+    aliases: ["Lloyds Bank", "LBG", "Lloyds", "로이즈", "LLOY"],
+    ticker: "LLOY.L / LYG",
+    country: "UK",
+    region: "Europe",
+    flag: "🇬🇧",
+    // Source: Lloyds Banking Group plc Annual Report 2024 (Feb 2025)
+    totalAssets: 782353,           // £611,213M × 1.28 GBP/USD ≈ $782,353M (FY2024)
+    retailRevenue: 13952,          // Retail (inc. Wealth) £10.9B × 1.28 ≈ $13,952M (FY2024, 총수익의 62%)
+    retailCustomers: 26000000,     // 2,600만 고객 (영국 최대 리테일 은행)
+    sellingPrice: null,
+    irSource: "Lloyds Banking Group plc Annual Report 2024, Feb 20, 2025",
+    irYear: 2024,
+    currency: "GBP→USD",
+    notes: "영국 1위 리테일 은행. GBP→USD 환산 (1.28). FY2024 총수익 £17.1B (-7% YoY). 리테일 부문(Retail inc. Wealth) 비중 62%. 고객예금 £482B+. 세후이익 £4.5B. Tesco Bank 인수 효과 포함.",
+    dataConfidence: { assets: "high", revenue: "high", customers: "high" }
   }
 };
 
