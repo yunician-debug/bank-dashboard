@@ -588,28 +588,9 @@ const BANK_DATA = {
     dataConfidence: { assets: "high", revenue: "medium", customers: "high" }
   },
 
-  "VP Bank AG": {
-    fullName: "VP Bank AG",
-    aliases: ["VP Bank", "Verwaltungs- und Privat-Bank", "리히텐슈타인VP은행"],
-    ticker: "VPBN.SW",
-    country: "Liechtenstein",
-    region: "Europe",
-    flag: "🇱🇮",
-    // Source: VP Bank AG Annual Report 2024
-    totalAssets: 11872,            // CHF 10.6B × 1.12 CHF/USD ≈ $11,872M (FY2024)
-    retailRevenue: 370,            // 영업수익 CHF 330.5M × 1.12 ≈ $370M (FY2024; -9.3% YoY)
-    retailCustomers: null,         // 프라이빗 뱅킹 중심; 고객 자산 CHF 56.4B
-    sellingPrice: null,
-    irSource: "VP Bank AG Annual Report 2024, Mar 2025",
-    irYear: 2024,
-    currency: "CHF→USD",
-    notes: "리히텐슈타인 사립 프라이빗 뱅크. CHF→USD 환산 (1.12). 운용자산 CHF 56.4B. FY2024 그룹 순이익 CHF 18.5M. 직원 945명. 고객예금 CHF 8.9B, 대출 CHF 5.9B.",
-    dataConfidence: { assets: "high", revenue: "high", customers: null }
-  },
-
-  "VPBank Vietnam": {
+  "VP Bank": {
     fullName: "Vietnam Prosperity Joint Stock Commercial Bank (VPBank)",
-    aliases: ["VPBank", "베트남번영은행", "VPB", "Vietnam Prosperity Bank", "VP Bank Vietnam"],
+    aliases: ["VPBank", "베트남번영은행", "VPB", "Vietnam Prosperity Bank", "VPBank Vietnam"],
     ticker: "VPB.VN / HM:VPB",
     country: "Vietnam",
     region: "Asia-Pacific",
