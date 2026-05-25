@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bank Intelligence Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+            <rect width="36" height="36" rx="10" fill="#fff"/>
+            <path d="M8 26V18.5L18 10L28 18.5V26H22V21H14V26H8Z" fill="#1a3a5c"/>
+            <rect x="15" y="22" width="6" height="4" rx="1" fill="#2563eb"/>
+          </svg>
+          <span class="logo-text">BankIQ</span>
+        </div>
+        <p class="header-subtitle">은행 IR 보고서 기반 정보 대시보드</p>
+      </div>
+    </header>
+
+    <!-- Search Section -->
+    <main class="main">
+      <div class="search-section">
+        <h1 class="search-title">은행 정보 검색</h1>
+        <p class="search-desc">은행명을 입력하면 최신 연간보고서(IR) 기준 주요 지표를 확인할 수 있습니다</p>
+        <div class="search-container">
+          <div class="search-box">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="#94a3b8" stroke-width="1.8"/>
+              <path d="M13 13L17 17" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="text"
+              id="bankSearch"
+              class="search-input"
+              placeholder="은행명 입력 (예: JPMorgan, KB, HSBC...)"
+              autocomplete="off"
+            />
+            <button class="search-clear" id="clearBtn" style="display:none">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M4 4L12 12M12 4L4 12" stroke="#64748b" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <ul class="autocomplete-list" id="autocompleteList"></ul>
+        </div>
+      </div>
+
+      <!-- Results Section -->
+      <div class="results-section" id="resultsSection" style="display:none">
+        <div class="bank-header" id="bankHeader"></div>
+        <div class="metrics-grid" id="metricsGrid"></div>
+        <div class="source-info" id="sourceInfo"></div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-state-icon">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect width="64" height="64" rx="16" fill="#f1f5f9"/>
+            <path d="M14 46V32L32 18L50 32V46H38V37H26V46H14Z" fill="#cbd5e1"/>
+            <rect x="27" y="38" width="10" height="8" rx="2" fill="#94a3b8"/>
+            <path d="M22 28H26M38 28H42" stroke="#94a3b8" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <p class="empty-state-title">검색할 은행명을 입력하세요</p>
+        <p class="empty-state-desc">JPMorgan Chase, KB금융, HSBC, BNP Paribas 등 주요 글로벌 은행 정보를 제공합니다</p>
+        <div class="bank-tags">
+          <span class="bank-tag" onclick="selectBank('JPMorgan Chase')">JPMorgan Chase</span>
+          <span class="bank-tag" onclick="selectBank('Bank of America')">Bank of America</span>
+          <span class="bank-tag" onclick="selectBank('HSBC')">HSBC</span>
+          <span class="bank-tag" onclick="selectBank('KB Financial Group')">KB Financial Group</span>
+          <span class="bank-tag" onclick="selectBank('BNP Paribas')">BNP Paribas</span>
+          <span class="bank-tag" onclick="selectBank('Deutsche Bank')">Deutsche Bank</span>
+          <span class="bank-tag" onclick="selectBank('Santander')">Santander</span>
+          <span class="bank-tag" onclick="selectBank('ICBC')">ICBC</span>
+        </div>
+      </div>
+
+      <!-- Not Found State -->
+      <div class="not-found" id="notFoundState" style="display:none">
+        <div class="not-found-icon">
+          <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="22" fill="#fef2f2" stroke="#fca5a5" stroke-width="2"/>
+            <path d="M24 15V25" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+            <circle cx="24" cy="32" r="1.5" fill="#ef4444"/>
+          </svg>
+        </div>
+        <p class="not-found-title">검색 결과가 없습니다</p>
+        <p class="not-found-desc" id="notFoundMsg"></p>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>데이터 출처: 각 은행 최신 연간보고서(IR Report) / FY2024 기준</p>
+      <p>환율 기준: EUR/USD 1.08, GBP/USD 1.28 (2024년 평균), JPY/USD 0.0066, KRW/USD 0.00073</p>
+    </footer>
+  </div>
+
+  <script src="banks.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
