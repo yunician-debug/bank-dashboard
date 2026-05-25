@@ -84,7 +84,7 @@ function renderAutocomplete(results, query) {
         <div class="autocomplete-name">${highlight(item.key, query)}</div>
         <div class="autocomplete-meta">${item.data.country} · ${item.data.region}</div>
       </div>
-      ${item.data.ticker !== '지주사 비상장' ? `<span class="autocomplete-ticker">${item.data.ticker.split('/')[0].trim()}</span>` : ''}
+      ${item.data.ticker !== '지주사 비상장' && item.data.ticker !== 'SMFG 계열사 (비상장)' ? `<span class="autocomplete-ticker">${item.data.ticker.split('/')[0].trim()}</span>` : ''}
     </li>
   `).join('');
   autocomplete.classList.add('open');
@@ -114,7 +114,7 @@ function renderBankInfo(key) {
     <div class="bank-info">
       <div class="bank-full-name">${data.fullName}</div>
       <div class="bank-meta">
-        ${data.ticker !== '지주사 비상장'
+        ${data.ticker !== '지주사 비상장' && data.ticker !== 'SMFG 계열사 (비상장)'
           ? `<span class="bank-badge badge-ticker">${data.ticker}</span>` : ''}
         <span class="bank-badge badge-country">${data.country}</span>
         <span class="bank-badge badge-region">${data.region}</span>
@@ -213,7 +213,7 @@ function renderBankInfo(key) {
         : ''
       }
       ${data.currency && data.currency !== 'USD'
-        ? `<div class="source-note">💱 환율: ${data.currency} 적용 (2024년 평균 기준)</div>`
+        ? `<div class="source-note">💱 환율: ${data.currency} 적용 (2025년 평균 기준)</div>`
         : ''
       }
     </div>
