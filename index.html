@@ -13,13 +13,16 @@
     <!-- Header -->
     <header class="header">
       <div class="header-inner">
-        <div class="logo">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-            <rect width="36" height="36" rx="10" fill="#fff"/>
-            <path d="M8 26V18.5L18 10L28 18.5V26H22V21H14V26H8Z" fill="#1a3a5c"/>
-            <rect x="15" y="22" width="6" height="4" rx="1" fill="#2563eb"/>
-          </svg>
-          <span class="logo-text">BankIQ</span>
+        <div class="header-top">
+          <div class="logo">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect width="36" height="36" rx="10" fill="#fff"/>
+              <path d="M8 26V18.5L18 10L28 18.5V26H22V21H14V26H8Z" fill="#1a3a5c"/>
+              <rect x="15" y="22" width="6" height="4" rx="1" fill="#2563eb"/>
+            </svg>
+            <span class="logo-text">BankIQ</span>
+          </div>
+          <button class="client-dashboard-btn" id="clientDashboardBtn">고객사 Dashboard</button>
         </div>
         <p class="header-subtitle">은행 IR 보고서 기반 정보 대시보드</p>
       </div>
@@ -99,9 +102,72 @@
     </main>
 
     <footer class="footer">
-      <p>데이터 출처: 각 은행 최신 연간보고서(IR Report) / <strong>FY2025 기준</strong> (일부 은행 회계연도 상이)</p>
-      <p>환율 기준 (2025년 평균): EUR/USD 1.09 | GBP/USD 1.285 | JPY/USD 0.0067 | KRW/USD 0.00072 | SGD/USD 0.75 | AUD/USD 0.635 | THB/USD 0.028 | VND/USD 0.000039 | SAR/USD 0.267</p>
+      <div class="footer-data">
+        <p>데이터 출처: 각 은행 최신 연간보고서(IR Report) / <strong>FY2025 기준</strong> (일부 은행 회계연도 상이)</p>
+        <p>환율 기준 (2025년 평균): EUR/USD 1.09 | GBP/USD 1.285 | JPY/USD 0.0067 | KRW/USD 0.00072 | SGD/USD 0.75 | AUD/USD 0.635 | THB/USD 0.028 | VND/USD 0.000039 | SAR/USD 0.267</p>
+      </div>
+      <div class="bank-list-section">
+        <div class="bank-list-title">검색 가능한 은행 목록 <span class="bank-count">33개</span></div>
+        <div class="bank-list-grid">
+          <div class="blg-row">
+            <span class="blg-label">🇺🇸 북미 (6)</span>
+            <span class="blg-banks">JPMorgan Chase · Bank of America · Wells Fargo · Citigroup · Goldman Sachs · Morgan Stanley</span>
+          </div>
+          <div class="blg-row">
+            <span class="blg-label">🇪🇺 유럽 (10)</span>
+            <span class="blg-banks">HSBC · Barclays · BNP Paribas · Deutsche Bank · Santander · ING Group · UBS · Standard Chartered · Société Générale · Lloyds Banking Group</span>
+          </div>
+          <div class="blg-row">
+            <span class="blg-label">🇯🇵 일본 (3)</span>
+            <span class="blg-banks">MUFG · SMFG · SMCC</span>
+          </div>
+          <div class="blg-row">
+            <span class="blg-label">🇨🇳 중국 (3)</span>
+            <span class="blg-banks">ICBC · China Construction Bank · Bank of China</span>
+          </div>
+          <div class="blg-row">
+            <span class="blg-label">🇰🇷 한국 (5)</span>
+            <span class="blg-banks">KB Financial Group · Shinhan Financial Group · Hana Financial Group · Woori Financial Group · NH Financial Group</span>
+          </div>
+          <div class="blg-row">
+            <span class="blg-label">🇸🇬🇦🇺 싱가포르·호주 (3)</span>
+            <span class="blg-banks">DBS Bank · UOB · Commonwealth Bank</span>
+          </div>
+          <div class="blg-row">
+            <span class="blg-label">🌏 기타 (3)</span>
+            <span class="blg-banks">Alinma Bank 🇸🇦 · VP Bank 🇻🇳 · SCBX 🇹🇭</span>
+          </div>
+        </div>
+      </div>
     </footer>
+  </div>
+
+  <!-- 고객사 Dashboard 모달 -->
+  <div class="modal-overlay" id="clientModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">고객사 Dashboard</div>
+          <div class="modal-subtitle">주요 고객사 FY2025 핵심 지표</div>
+        </div>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <table class="client-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>은행명</th>
+              <th>총 자산</th>
+              <th>리테일 매출</th>
+              <th>리테일 고객수</th>
+              <th>기준연도</th>
+            </tr>
+          </thead>
+          <tbody id="clientTableBody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script src="banks.js"></script>

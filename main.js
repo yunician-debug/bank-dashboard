@@ -317,6 +317,53 @@ document.addEventListener('click', e => {
   }
 });
 
+/* ------------ Client Dashboard Modal ------------ */
+
+const CLIENT_BANKS = ['UOB', 'VP Bank', 'Alinma Bank', 'SMCC', 'Lloyds Banking Group'];
+
+function openClientDashboard() {
+  const tbody = document.getElementById('clientTableBody');
+  tbody.innerHTML = CLIENT_BANKS.map(key => {
+    const d = BANK_DATA[key];
+    if (!d) return '';
+    const assets    = d.totalAssets   ? formatAssets(d.totalAssets) : '—';
+    const revenue   = d.retailRevenue !== null
+      ? `$${(d.retailRevenue / 1000).toFixed(1)}B` : '—';
+    const customers = d.retailCustomers ? formatCustomers(d.retailCustomers) : '—';
+    return `<tr>
+      <td><span style="font-size:22px">${d.flag}</span></td>
+      <td>
+        <div class="ct-bank-name">${key}</div>
+        <div class="ct-bank-sub">${d.country}</div>
+      </td>
+      <td>
+        <span class="ct-value">${assets}</span>
+        ${d.totalAssets ? confidenceBadge(d.dataConfidence.assets) : ''}
+      </td>
+      <td>
+        <span class="ct-value revenue">${revenue}</span>
+        ${d.retailRevenue !== null ? confidenceBadge(d.dataConfidence.revenue) : ''}
+      </td>
+      <td>
+        <span class="ct-value customers">${customers}</span>
+        ${d.retailCustomers ? confidenceBadge(d.dataConfidence.customers) : ''}
+      </td>
+      <td><span class="bank-badge badge-year">FY${d.irYear}</span></td>
+    </tr>`;
+  }).join('');
+  document.getElementById('clientModal').classList.add('open');
+}
+
+document.getElementById('clientDashboardBtn').addEventListener('click', openClientDashboard);
+
+document.getElementById('modalClose').addEventListener('click', () => {
+  document.getElementById('clientModal').classList.remove('open');
+});
+
+document.getElementById('clientModal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
 /* Inject confidence badge styles */
 const style = document.createElement('style');
 style.textContent = `
