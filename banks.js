@@ -198,7 +198,7 @@ const BANK_DATA = {
     notes: "GBP→USD 환산 (1.285). FY2025 세전이익 £9.14B (+13% YoY). 총자산 £1,544.2B (trading 증가·UK 대출 성장). Tesco Bank 통합 완료.",
     dataConfidence: { assets: "high", revenue: "medium", customers: "high" },
     estimationBasis: {
-      revenue: "그룹 세전이익 +13% YoY 성장률 × GBP/USD"
+      revenue: "그룹 세전이익 +13% YoY 성장률 기반"
     }
   },
 
@@ -219,7 +219,7 @@ const BANK_DATA = {
     notes: "EUR→USD 환산 (1.09). CPBS(Commercial, Personal Banking & Services) 수익 +5.5% YoY. 유로존 상업은행·Personal Finance 마진 개선.",
     dataConfidence: { assets: "high", revenue: "medium", customers: "high" },
     estimationBasis: {
-      revenue: "CPBS FY2024 €26.8B + 5.5% YoY × EUR/USD"
+      revenue: "CPBS FY2024 €26.8B + 5.5% YoY 성장"
     }
   },
 
@@ -240,8 +240,7 @@ const BANK_DATA = {
     notes: "EUR→USD 환산 (1.09). FY2025 기록 세전이익 €9.7B (+84% YoY). 전사 순수익 €32.1B (+7%). 구조조정 효과 극대화.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 €1,347B + 8.9% YoY × EUR/USD 1.09",
-      revenue: "Private Bank FY2024 €9.2B × EUR/USD 1.09",
+      assets: "FY2024 €1,347B 대비 +8.9% YoY 성장 추정",
       customers: "Private Bank 세부 데이터 미공개"
     }
   },
@@ -263,7 +262,7 @@ const BANK_DATA = {
     notes: "EUR→USD 환산 (1.09). FY2025 기록 실적: 순이익 €14,101M (+12%), EPS €0.91 (+17%). 고객 1억 8천만명 (전년比 +800만). Retail & Commercial 중심.",
     dataConfidence: { assets: "medium", revenue: null, customers: "high" },
     estimationBasis: {
-      assets: "FY2024 €1,790B 대비 +8.9% YoY × EUR/USD 1.09"
+      assets: "FY2024 €1,790B 대비 +8.9% YoY 성장 추정"
     }
   },
 
@@ -284,7 +283,6 @@ const BANK_DATA = {
     notes: "EUR→USD 환산 (1.09). 디지털 뱅킹 강점. 리테일 매출 및 고객수 추정치.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 €990B 기준 EUR/USD 1.09 환산",
       revenue: "FY2024 Retail Banking 수익 기반 추정",
       customers: "리테일 세부 데이터 미공개"
     }
@@ -353,7 +351,7 @@ const BANK_DATA = {
     notes: "EUR→USD 환산 (1.09). 프랑스 리테일 뱅킹 중심. 추정치.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 €1,437B + 1.5% YoY × EUR/USD 1.09",
+      assets: "FY2024 €1,437B 대비 +1.5% YoY 성장 추정",
       revenue: "FY2024 French Retail Banking 수익 기반",
       customers: "리테일 세부 데이터 미공개"
     }
@@ -380,7 +378,7 @@ const BANK_DATA = {
     notes: "일본 회계연도: 4월~3월. JPY→USD 환산 (0.0067). FY2025 기록이익. Morgan Stanley와의 전략적 제휴 기여. 추정치.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 ¥364T 기반 성장률 × JPY/USD 0.0067",
+      assets: "FY2024 ¥364T 기반 성장률 적용",
       revenue: "FY2024 리테일 수익 기반 기록이익 반영",
       customers: "리테일 세부 데이터 미공개"
     }
@@ -403,7 +401,7 @@ const BANK_DATA = {
     notes: "일본 회계연도: 4월~3월. JPY→USD 환산 (0.0067). FY2024(~Mar 2025) ¥292.2T 기준 +3.9% 성장 추정. SMBC 은행 포함.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 ¥292.2T + 3.9% YoY × JPY/USD 0.0067",
+      assets: "FY2024 ¥292.2T 대비 +3.9% YoY 성장 추정",
       revenue: "Retail Business Unit FY2024 기반 추정",
       customers: "SMBC 리테일 세부 데이터 미공개"
     }
@@ -453,7 +451,7 @@ const BANK_DATA = {
     notes: "중국 2위 은행. 추정치.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 성장 추세 기반 CNY→USD 환산",
+      assets: "FY2024 성장 추세 반영 추정",
       revenue: "FY2024 개인금융 수익 기반 추정",
       customers: "개인계좌 수 기반 추정"
     }
@@ -476,7 +474,7 @@ const BANK_DATA = {
     notes: "중국 3위 은행. 추정치.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "FY2024 성장 추세 기반 CNY→USD 환산",
+      assets: "FY2024 성장 추세 반영 추정",
       revenue: "FY2024 개인금융 수익 기반 추정",
       customers: "개인계좌 수 기반 추정"
     }
@@ -622,7 +620,6 @@ const BANK_DATA = {
     notes: "SGD→USD 환산 (0.75). FY2025 총수익 SGD 22.9B (+3%, 기록). 순이익 SGD 11.0B. 시총 USD 1,240억 (글로벌 25위). SGD 예금 +64B 증가.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "SGD 850B 기준 SGD/USD 0.75 환산",
       revenue: "FY2024 Consumer/WM 수익 기반 추정",
       customers: "ASEAN 고객 세부 데이터 미공개"
     }
@@ -670,7 +667,6 @@ const BANK_DATA = {
     notes: "SGD→USD 환산 (0.75). FY2025 순이익 SGD 4.7B (특별 충당금 반영). 대출 성장·CASA +14.5% YoY. ASEAN 800만+ 고객.",
     dataConfidence: { assets: "medium", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      assets: "SGD 550B 기준 SGD/USD 0.75 환산",
       revenue: "FY2024 Group Retail 수익 기반 추정",
       customers: "FY2024 공식 발표 수치 유지"
     }
@@ -714,7 +710,7 @@ const BANK_DATA = {
     notes: "VND→USD 환산 (0.000039). FY2025 총자산 VND 1,260T (+36.4% YoY). 세전이익 VND 30.6T (+53%) — 사상 최대. FE Credit 지분 SMBC에 매각.",
     dataConfidence: { assets: "high", revenue: "medium", customers: "medium" },
     estimationBasis: {
-      revenue: "FY2025 세전이익 +53% 성장 반영 × VND/USD",
+      revenue: "FY2025 세전이익 +53% 성장 반영",
       customers: "리테일 계좌 수 기반 추정"
     }
   },
@@ -736,7 +732,7 @@ const BANK_DATA = {
     notes: "SMFG 100% 자회사 (비상장). 일본 회계연도: 4월~3월. JPY→USD 환산 (0.0067). FY2025(~Mar 2026) 데이터 공식 발표 직후 — 확인 후 갱신 필요.",
     dataConfidence: { assets: null, revenue: "medium", customers: "medium" },
     estimationBasis: {
-      revenue: "FY2024 영업수익 ¥700B × JPY/USD 0.0067",
+      revenue: "FY2024 영업수익 ¥700B 기준 추정",
       customers: "FY2024 3,615만 회원 + 성장률 반영"
     }
   },
