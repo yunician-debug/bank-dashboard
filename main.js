@@ -142,7 +142,9 @@ function renderBankInfo(key) {
       <div class="metric-label">총 자산 (Total Assets)</div>
       ${assetsFmt
         ? `<div class="metric-value">${assetsFmt}</div>
-           <div class="metric-unit">USD 기준&nbsp;&nbsp;${confidenceBadge(data.dataConfidence.assets)}</div>`
+           <div class="metric-unit">USD 기준&nbsp;&nbsp;${confidenceBadge(data.dataConfidence.assets)}</div>
+           ${data.dataConfidence.assets === 'medium' && data.estimationBasis?.assets
+             ? `<div class="metric-basis">📊 ${data.estimationBasis.assets}</div>` : ''}`
         : `<div class="metric-na">N/A</div>`
       }
     </div>
@@ -158,7 +160,9 @@ function renderBankInfo(key) {
       <div class="metric-label">리테일 부문 매출 (Retail Revenue)</div>
       ${revenueFmt
         ? `<div class="metric-value">${revenueFmt}</div>
-           <div class="metric-unit">USD 기준&nbsp;&nbsp;${confidenceBadge(data.dataConfidence.revenue)}</div>`
+           <div class="metric-unit">USD 기준&nbsp;&nbsp;${confidenceBadge(data.dataConfidence.revenue)}</div>
+           ${data.dataConfidence.revenue === 'medium' && data.estimationBasis?.revenue
+             ? `<div class="metric-basis">📊 ${data.estimationBasis.revenue}</div>` : ''}`
         : `<div class="metric-na">N/A</div>
            <div class="metric-unit">세부 데이터 미공개</div>`
       }
@@ -177,7 +181,9 @@ function renderBankInfo(key) {
       <div class="metric-label">리테일 고객 수 (Retail Customers)</div>
       ${customersFmt
         ? `<div class="metric-value">${customersFmt}</div>
-           <div class="metric-unit">명 기준&nbsp;&nbsp;${confidenceBadge(data.dataConfidence.customers)}</div>`
+           <div class="metric-unit">명 기준&nbsp;&nbsp;${confidenceBadge(data.dataConfidence.customers)}</div>
+           ${data.dataConfidence.customers === 'medium' && data.estimationBasis?.customers
+             ? `<div class="metric-basis">📊 ${data.estimationBasis.customers}</div>` : ''}`
         : `<div class="metric-na">N/A</div>
            <div class="metric-unit">세부 데이터 미공개</div>`
       }
