@@ -280,6 +280,41 @@
         .progress-track { width: 160px; height: 4px; background: #e2e8f0; border-radius: 2px; overflow: hidden; flex-shrink: 0; }
         .progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #a78bfa); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
 
+        /* ── API Key Bar ── */
+        .apikey-bar {
+            background: #fffbeb;
+            border-bottom: 1px solid #fde68a;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .apikey-label { font-size: 0.8rem; font-weight: 600; color: #92400e; white-space: nowrap; }
+        .apikey-input {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1.5px solid #fcd34d;
+            border-radius: 6px;
+            font-size: 0.83rem;
+            font-family: monospace;
+            color: #1e293b;
+            background: white;
+            outline: none;
+            max-width: 460px;
+        }
+        .apikey-input:focus { border-color: #f59e0b; box-shadow: 0 0 0 2px rgba(245,158,11,0.15); }
+        .apikey-link {
+            font-size: 0.78rem;
+            color: #d97706;
+            text-decoration: none;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+        .apikey-link:hover { text-decoration: underline; }
+        .apikey-bar.ok { background: #f0fdf4; border-bottom-color: #86efac; }
+        .apikey-bar.ok .apikey-label { color: #166534; }
+
         body.dragover .input-bar { background: #eff6ff; }
         body.dragover .file-btn { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
     </style>
@@ -293,7 +328,15 @@
             <h1>한국어 번역기</h1>
             <p>PDF 파일 또는 URL을 업로드하면 한국어로 번역합니다</p>
         </div>
-        <div class="header-badge">MyMemory API</div>
+        <div class="header-badge">Claude AI</div>
+    </div>
+
+    <!-- API Key Bar -->
+    <div class="apikey-bar" id="apikeyBar">
+        <span class="apikey-label">🔑 Anthropic API Key</span>
+        <input class="apikey-input" id="apikeyInput" type="password"
+               placeholder="sk-ant-api03-…  (입력 후 자동 저장됩니다)"/>
+        <a class="apikey-link" href="https://console.anthropic.com/settings/keys" target="_blank">키 발급 →</a>
     </div>
 
     <!-- Input Bar -->
@@ -353,6 +396,18 @@
     const goBtn          = document.getElementById('goBtn');
     const fileBtn        = document.getElementById('fileBtn');
     const fileNameTag    = document.getElementById('fileNameTag');
+    const apikeyInput    = document.getElementById('apikeyInput');
+    const apikeyBar      = document.getElementById('apikeyBar');
+
+    // ─── API Key: load from localStorage ─────────────────────────────
+    const savedKey = localStorage.getItem('anthropic_api_key');
+    if (savedKey) { apikeyInput.value = savedKey; apikeyBar.classList.add('ok'); }
+
+    apikeyInput.addEventListener('input', () => {
+        const v = apikeyInput.value.trim();
+        if (v) { localStorage.setItem('anthropic_api_key', v); apikeyBar.classList.add('ok'); }
+        else   { localStorage.removeItem('anthropic_api_key'); apikeyBar.classList.remove('ok'); }
+    });
 
     // ─── File input ───────────────────────────────────────────────────
     document.getElementById('fileInput').addEventListener('change', e => {
@@ -393,17 +448,20 @@
 
     // ─── Entry ───────────────────────────────────────────────────────
     async function handleGo() {
-        const file = document.getElementById('fileInput').files[0];
-        const url  = document.getElementById('urlInput').value.trim();
+        const file   = document.getElementById('fileInput').files[0];
+        const url    = document.getElementById('urlInput').value.trim();
+        const apiKey = apikeyInput.value.trim();
+
         if (!file && !url) { alert('PDF 파일을 선택하거나 URL을 입력해주세요.'); return; }
+        if (!apiKey)        { alert('Anthropic API Key를 입력해주세요.'); apikeyInput.focus(); return; }
 
         pairsContainer.innerHTML = '';
         placeholder.style.display = 'none';
         goBtn.disabled = true;
 
         try {
-            if (file) await handlePDF(file);
-            else      await handleURL(url);
+            if (file) await handlePDF(file, apiKey);
+            else      await handleURL(url, apiKey);
             setStatus('번역 완료!', 100, 'active');
             setTimeout(() => setIdle('완료'), 2500);
         } catch (err) {
@@ -440,7 +498,7 @@
     }
 
     // ─── PDF ──────────────────────────────────────────────────────────
-    async function handlePDF(file) {
+    async function handlePDF(file, apiKey) {
         setStatus('PDF 로딩 중…', 5);
         const buf = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
@@ -480,7 +538,7 @@
 
             if (rawText) {
                 try {
-                    const result = await translateText(rawText);
+                    const result = await translateText(rawText, apiKey);
                     fillRight(rightEl, `페이지 ${i}`, result);
                 } catch (e) {
                     fillRight(rightEl, `페이지 ${i}`, `<span style="color:#f87171">번역 실패: ${e.message}</span>`);
@@ -492,7 +550,7 @@
     }
 
     // ─── URL ─────────────────────────────────────────────────────────
-    async function handleURL(url) {
+    async function handleURL(url, apiKey) {
         setStatus('URL 콘텐츠 가져오는 중…', 8);
 
         const proxies = [
@@ -550,7 +608,7 @@
         </div>`;
         const titleRight = createPair(titleLeftHTML, '제목');
         try {
-            const t = await translateText(siteTitle);
+            const t = await translateText(siteTitle, apiKey);
             fillRight(titleRight, '제목', `<strong>${t}</strong>`);
         } catch {
             fillRight(titleRight, '제목', `<strong>${escHtml(siteTitle)}</strong>`);
@@ -570,7 +628,7 @@
             const rightEl = createPair(leftHTML, label);
 
             try {
-                const translated = await translateText(u.text);
+                const translated = await translateText(u.text, apiKey);
                 fillRight(rightEl, label,
                     u.type === 'heading'
                         ? `<strong>${translated}</strong>`
@@ -581,50 +639,20 @@
         }
     }
 
-    // ─── Translation ─────────────────────────────────────────────────
-    async function translateText(text) {
+    // ─── Translation: Claude via local server ─────────────────────────
+    async function translateText(text, apiKey) {
         if (!text || text.trim().length < 2) return text;
-        const chunks = chunkText(text.trim(), 450);
-        const parts  = [];
-        for (const chunk of chunks) {
-            parts.push(await callMyMemory(chunk));
-            if (chunks.length > 1) await sleep(320);
-        }
-        return parts.join(' ');
-    }
 
-    function chunkText(text, max) {
-        if (text.length <= max) return [text];
-        const out = [];
-        let start = 0;
-        while (start < text.length) {
-            let end = start + max;
-            if (end < text.length) {
-                const brk = Math.max(
-                    text.lastIndexOf('. ', end),
-                    text.lastIndexOf('? ', end),
-                    text.lastIndexOf('! ', end),
-                    text.lastIndexOf(' ',  end)
-                );
-                if (brk > start + 40) end = brk + 1;
-            }
-            out.push(text.slice(start, end).trim());
-            start = end;
-        }
-        return out.filter(Boolean);
-    }
+        const resp = await fetch('/translate', {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ text: text.trim(), apiKey })
+        });
 
-    async function callMyMemory(text) {
-        const params = new URLSearchParams({ q: text, langpair: 'en|ko', de: 'yunician@gmail.com' });
-        const resp = await fetch(`https://api.mymemory.translated.net/get?${params}`);
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         const data = await resp.json();
-        const status = parseInt(data.responseStatus, 10);
-        if (status === 200 || status === 206) return data.responseData.translatedText;
-        throw new Error(data.responseDetails || '번역 API 오류');
+        if (!resp.ok) throw new Error(data.error || `서버 오류 ${resp.status}`);
+        return data.translated;
     }
-
-    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
     function escHtml(str) {
         return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
