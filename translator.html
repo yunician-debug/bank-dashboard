@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF · URL 한국어 번역기</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --success: #16a34a;
+            --border: #e2e8f0;
+            --muted: #94a3b8;
+            --text: #1e293b;
+            --left-bg: #ffffff;
+            --right-bg: #f0f9ff;
+            --card-bg: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans KR', Roboto, sans-serif;
+            background: #f1f5f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(79,70,229,0.35);
+        }
+
+        .header-icon { font-size: 1.6rem; }
+
+        .header-text h1 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .header-text p {
+            font-size: 0.75rem;
+            opacity: 0.75;
+            margin-top: 1px;
+        }
+
+        .header-badge {
+            margin-left: auto;
+            background: rgba(255,255,255,0.18);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* ── Input Bar ── */
+        .input-bar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        #fileInput { display: none; }
+
+        .file-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fdf4;
+            border: 1.5px dashed #4ade80;
+            color: var(--success);
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.84rem;
+            font-weight: 600;
+            transition: all 0.15s;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .file-btn:hover { background: #dcfce7; border-color: #22c55e; }
+
+        .file-btn.has-file {
+            background: #dcfce7;
+            border-style: solid;
+            border-color: #22c55e;
+        }
+
+        .file-name-tag {
+            font-size: 0.78rem;
+            color: var(--muted);
+            max-width: 160px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .or-divider {
+            color: var(--muted);
+            font-size: 0.82rem;
+            flex-shrink: 0;
+        }
+
+        .url-input {
+            flex: 1;
+            padding: 8px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.88rem;
+            color: var(--text);
+            outline: none;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .url-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.1);
+        }
+
+        .url-input::placeholder { color: #cbd5e1; }
+
+        .go-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: background 0.15s, transform 0.1s;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .go-btn:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); }
+        .go-btn:active:not(:disabled) { transform: translateY(0); }
+        .go-btn:disabled { background: var(--muted); cursor: not-allowed; transform: none; }
+
+        /* ── Viewer ── */
+        .viewer {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        .panel-left { background: var(--left-bg); }
+        .panel-right { background: var(--right-bg); }
+
+        .gutter {
+            width: 5px;
+            background: linear-gradient(180deg, #e2e8f0 0%, #c7d2fe 50%, #e2e8f0 100%);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .gutter::after {
+            content: '⋮';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #a5b4fc;
+            font-size: 1rem;
+            background: white;
+            border: 1px solid #c7d2fe;
+            border-radius: 10px;
+            padding: 6px 3px;
+            line-height: 1;
+        }
+
+        .panel-header {
+            padding: 9px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .panel-left .panel-header { background: #fafafa; }
+        .panel-right .panel-header { background: #e0f2fe; color: #0369a1; }
+
+        .panel-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 18px;
+        }
+
+        .panel-scroll::-webkit-scrollbar { width: 6px; }
+        .panel-scroll::-webkit-scrollbar-track { background: transparent; }
+        .panel-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        .panel-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* ── Placeholder ── */
+        .placeholder {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--muted);
+            padding: 40px;
+        }
+
+        .placeholder-icon { font-size: 3.5rem; margin-bottom: 16px; opacity: 0.4; }
+        .placeholder-title { font-size: 1rem; font-weight: 600; margin-bottom: 6px; color: #64748b; }
+        .placeholder-desc { font-size: 0.83rem; line-height: 1.6; }
+
+        /* ── PDF Page ── */
+        .pdf-page-wrap {
+            margin-bottom: 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pdf-page-wrap canvas {
+            max-width: 100%;
+            display: block;
+            border-radius: 4px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.14);
+        }
+
+        .page-label {
+            margin-top: 8px;
+            font-size: 0.72rem;
+            color: var(--muted);
+            background: #f1f5f9;
+            padding: 2px 10px;
+            border-radius: 10px;
+        }
+
+        /* ── Translation Block ── */
+        .trans-block {
+            background: white;
+            border: 1px solid #bfdbfe;
+            border-left: 3px solid #6366f1;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 22px;
+            line-height: 1.85;
+            font-size: 0.93rem;
+            color: var(--text);
+            min-height: 56px;
+        }
+
+        .trans-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #93c5fd;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        /* ── URL content (left side) ── */
+        .url-content-block {
+            margin-bottom: 16px;
+        }
+
+        .url-h { font-weight: 700; font-size: 0.95rem; color: #1e293b; margin-bottom: 4px; }
+        .url-p { font-size: 0.9rem; color: #334155; line-height: 1.75; }
+
+        .url-title-area {
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .url-title-area h2 { font-size: 1.05rem; color: #1e293b; margin-bottom: 4px; }
+        .url-title-area .url-meta { font-size: 0.75rem; color: var(--muted); }
+
+        /* ── Spinner ── */
+        .spin {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            border: 2px solid #bfdbfe;
+            border-top-color: #6366f1;
+            border-radius: 50%;
+            animation: rotate 0.65s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+
+        @keyframes rotate { to { transform: rotate(360deg); } }
+
+        /* ── Status Bar ── */
+        .status-bar {
+            height: 26px;
+            background: #f8fafc;
+            border-top: 1px solid var(--border);
+            padding: 0 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #94a3b8;
+            flex-shrink: 0;
+        }
+
+        .status-dot.active { background: #22c55e; animation: pulse 1.2s ease-in-out infinite; }
+        .status-dot.error { background: #ef4444; animation: none; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.8); }
+        }
+
+        .status-text { font-size: 0.75rem; color: var(--muted); flex: 1; }
+
+        .progress-track {
+            width: 160px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #a78bfa);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        /* ── Drag-over state ── */
+        body.dragover .input-bar { background: #eff6ff; }
+        body.dragover .file-btn { border-color: var(--primary); background: #eff6ff; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <span class="header-icon">🌐</span>
+        <div class="header-text">
+            <h1>한국어 번역기</h1>
+            <p>PDF 파일 또는 URL을 업로드하면 한국어로 번역합니다</p>
+        </div>
+        <div class="header-badge">MyMemory API</div>
+    </div>
+
+    <!-- Input Bar -->
+    <div class="input-bar">
+        <input type="file" id="fileInput" accept=".pdf">
+
+        <label class="file-btn" id="fileBtn" for="fileInput">
+            <span>📄</span> PDF 파일 선택
+        </label>
+
+        <span class="file-name-tag" id="fileNameTag">선택된 파일 없음</span>
+
+        <span class="or-divider">또는</span>
+
+        <input
+            class="url-input"
+            id="urlInput"
+            type="text"
+            placeholder="https://example.com  —  URL을 입력하세요"
+        />
+
+        <button class="go-btn" id="goBtn" onclick="handleGo()">
+            <span>번역 시작</span> <span>→</span>
+        </button>
+    </div>
+
+    <!-- Viewer -->
+    <div class="viewer">
+        <div class="panel panel-left">
+            <div class="panel-header">📄 원본</div>
+            <div class="panel-scroll" id="leftScroll">
+                <div class="placeholder" id="leftHolder">
+                    <div class="placeholder-icon">📄</div>
+                    <div class="placeholder-title">원본 문서가 여기에 표시됩니다</div>
+                    <div class="placeholder-desc">
+                        PDF 파일을 업로드하거나<br>
+                        웹 페이지 URL을 입력한 후<br>
+                        번역 시작 버튼을 눌러주세요
+                    </div>
+                </div>
+                <div id="leftContent"></div>
+            </div>
+        </div>
+
+        <div class="gutter"></div>
+
+        <div class="panel panel-right">
+            <div class="panel-header">🇰🇷 한국어 번역</div>
+            <div class="panel-scroll" id="rightScroll">
+                <div class="placeholder" id="rightHolder">
+                    <div class="placeholder-icon">🇰🇷</div>
+                    <div class="placeholder-title">번역 결과가 여기에 표시됩니다</div>
+                    <div class="placeholder-desc">
+                        번역된 한국어 내용이<br>
+                        오른쪽에 나타납니다
+                    </div>
+                </div>
+                <div id="rightContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-dot" id="statusDot"></div>
+        <span class="status-text" id="statusText">준비</span>
+        <div class="progress-track">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </div>
+
+    <script>
+    // ─── PDF.js Worker ────────────────────────────────────────────────
+    pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // ─── DOM refs ─────────────────────────────────────────────────────
+    const leftScroll   = document.getElementById('leftScroll');
+    const rightScroll  = document.getElementById('rightScroll');
+    const leftContent  = document.getElementById('leftContent');
+    const rightContent = document.getElementById('rightContent');
+    const leftHolder   = document.getElementById('leftHolder');
+    const rightHolder  = document.getElementById('rightHolder');
+    const statusText   = document.getElementById('statusText');
+    const statusDot    = document.getElementById('statusDot');
+    const progressFill = document.getElementById('progressFill');
+    const goBtn        = document.getElementById('goBtn');
+    const fileBtn      = document.getElementById('fileBtn');
+    const fileNameTag  = document.getElementById('fileNameTag');
+
+    // ─── Synchronized Scroll ─────────────────────────────────────────
+    let scrollLock = false;
+
+    function syncFrom(source, target) {
+        if (scrollLock) return;
+        scrollLock = true;
+        const maxSrc = source.scrollHeight - source.clientHeight;
+        const maxTgt = target.scrollHeight - target.clientHeight;
+        if (maxSrc > 0 && maxTgt > 0) {
+            target.scrollTop = (source.scrollTop / maxSrc) * maxTgt;
+        }
+        requestAnimationFrame(() => { scrollLock = false; });
+    }
+
+    leftScroll.addEventListener('scroll',  () => syncFrom(leftScroll,  rightScroll));
+    rightScroll.addEventListener('scroll', () => syncFrom(rightScroll, leftScroll));
+
+    // ─── File input ───────────────────────────────────────────────────
+    document.getElementById('fileInput').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (!file) return;
+        fileNameTag.textContent = file.name;
+        fileBtn.classList.add('has-file');
+        document.getElementById('urlInput').value = '';
+    });
+
+    // Drag & drop on whole page
+    document.addEventListener('dragover', e => { e.preventDefault(); document.body.classList.add('dragover'); });
+    document.addEventListener('dragleave', () => document.body.classList.remove('dragover'));
+    document.addEventListener('drop', e => {
+        e.preventDefault();
+        document.body.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file && file.type === 'application/pdf') {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            document.getElementById('fileInput').files = dt.files;
+            fileNameTag.textContent = file.name;
+            fileBtn.classList.add('has-file');
+            document.getElementById('urlInput').value = '';
+        }
+    });
+
+    // ─── Status helpers ───────────────────────────────────────────────
+    function setStatus(text, pct = null, state = 'active') {
+        statusText.textContent = text;
+        statusDot.className = 'status-dot ' + state;
+        if (pct !== null) progressFill.style.width = pct + '%';
+    }
+
+    function setIdle(text = '준비') {
+        statusText.textContent = text;
+        statusDot.className = 'status-dot';
+        progressFill.style.width = '0%';
+    }
+
+    function clearPanels() {
+        leftContent.innerHTML  = '';
+        rightContent.innerHTML = '';
+        leftHolder.style.display  = 'none';
+        rightHolder.style.display = 'none';
+    }
+
+    // ─── Entry point ──────────────────────────────────────────────────
+    async function handleGo() {
+        const file = document.getElementById('fileInput').files[0];
+        const url  = document.getElementById('urlInput').value.trim();
+
+        if (!file && !url) {
+            alert('PDF 파일을 선택하거나 URL을 입력해주세요.');
+            return;
+        }
+
+        clearPanels();
+        goBtn.disabled = true;
+
+        try {
+            if (file) {
+                await handlePDF(file);
+            } else {
+                await handleURL(url);
+            }
+            setStatus('번역 완료!', 100, 'active');
+            setTimeout(() => setIdle('완료'), 2500);
+        } catch (err) {
+            setStatus('오류: ' + err.message, 0, 'error');
+            appendError(err.message);
+        } finally {
+            goBtn.disabled = false;
+        }
+    }
+
+    // ─── PDF handler ──────────────────────────────────────────────────
+    async function handlePDF(file) {
+        setStatus('PDF 로딩 중…', 5);
+
+        const buf = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+        const total = pdf.numPages;
+
+        for (let i = 1; i <= total; i++) {
+            const pct = Math.round(((i - 0.8) / total) * 92) + 5;
+            setStatus(`${i} / ${total} 페이지 처리 중…`, pct);
+
+            const page = await pdf.getPage(i);
+
+            // ── Left: render canvas ──
+            const maxW   = leftScroll.clientWidth - 40;
+            const native = page.getViewport({ scale: 1 });
+            const scale  = Math.min(1.6, maxW / native.width);
+            const vp     = page.getViewport({ scale });
+
+            const canvas = document.createElement('canvas');
+            canvas.width  = vp.width;
+            canvas.height = vp.height;
+            await page.render({ canvasContext: canvas.getContext('2d'), viewport: vp }).promise;
+
+            const wrap = document.createElement('div');
+            wrap.className = 'pdf-page-wrap';
+            wrap.appendChild(canvas);
+            const lbl = document.createElement('div');
+            lbl.className = 'page-label';
+            lbl.textContent = `페이지 ${i} / ${total}`;
+            wrap.appendChild(lbl);
+            leftContent.appendChild(wrap);
+
+            // ── Right: translation placeholder ──
+            const block = createTransBlock(`페이지 ${i}`, '<span class="spin"></span>번역 중…');
+            rightContent.appendChild(block);
+
+            // Extract text & translate
+            const tc      = await page.getTextContent();
+            const rawText = tc.items.map(it => it.str).join(' ').trim();
+
+            if (rawText) {
+                try {
+                    const result = await translateText(rawText);
+                    fillTransBlock(block, `페이지 ${i}`, result);
+                } catch (e) {
+                    fillTransBlock(block, `페이지 ${i}`,
+                        `<span style="color:#f87171">번역 실패: ${e.message}</span>`);
+                }
+            } else {
+                fillTransBlock(block, `페이지 ${i}`,
+                    '<span style="color:#94a3b8;font-style:italic">텍스트 없음 (이미지 전용 페이지)</span>');
+            }
+        }
+    }
+
+    // ─── URL handler ──────────────────────────────────────────────────
+    async function handleURL(url) {
+        setStatus('URL 콘텐츠 가져오는 중…', 8);
+
+        const proxyList = [
+            `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
+        ];
+
+        let html = null;
+        for (const proxy of proxyList) {
+            try {
+                const ctrl = new AbortController();
+                const tid  = setTimeout(() => ctrl.abort(), 12000);
+                const resp = await fetch(proxy, { signal: ctrl.signal });
+                clearTimeout(tid);
+                if (resp.ok) { html = await resp.text(); break; }
+            } catch { /* try next */ }
+        }
+
+        if (!html) {
+            throw new Error('URL을 가져올 수 없습니다. CORS 제한이나 네트워크 문제일 수 있습니다.');
+        }
+
+        setStatus('HTML 파싱 중…', 18);
+
+        const parser = new DOMParser();
+        const doc    = parser.parseFromString(html, 'text/html');
+
+        // Remove noisy elements
+        ['script','style','noscript','nav','footer','aside','header',
+         'iframe','figure','svg','form','button'].forEach(tag =>
+            doc.querySelectorAll(tag).forEach(el => el.remove())
+        );
+
+        const siteTitle = doc.querySelector('title')?.textContent?.trim() || url;
+
+        // ── Left: title + source content ──
+        const titleWrap = document.createElement('div');
+        titleWrap.className = 'url-title-area';
+        titleWrap.innerHTML = `<h2>${escHtml(siteTitle)}</h2>
+            <div class="url-meta">${escHtml(url)}</div>`;
+        leftContent.appendChild(titleWrap);
+
+        // Collect elements
+        const nodes = [...doc.querySelectorAll(
+            'h1,h2,h3,h4,h5,h6,p,li,blockquote,td,th,dt,dd'
+        )].filter(el => el.textContent.trim().length > 12);
+
+        // Batch into logical units
+        const units = [];   // { type: 'heading'|'para', text, el }
+        let   acc   = '';
+
+        for (const el of nodes) {
+            const tag  = el.tagName.toLowerCase();
+            const text = el.textContent.replace(/\s+/g, ' ').trim();
+            if (/^h[1-6]$/.test(tag)) {
+                if (acc.trim()) { units.push({ type: 'para', text: acc.trim() }); acc = ''; }
+                units.push({ type: 'heading', text });
+            } else {
+                acc += ' ' + text;
+                if (acc.length > 700) {
+                    units.push({ type: 'para', text: acc.trim() });
+                    acc = '';
+                }
+            }
+        }
+        if (acc.trim()) units.push({ type: 'para', text: acc.trim() });
+
+        if (units.length === 0) {
+            const fallback = doc.body?.textContent.replace(/\s+/g,' ').trim() || '';
+            if (fallback.length < 20) throw new Error('번역할 텍스트를 찾을 수 없습니다.');
+            units.push({ type: 'para', text: fallback.slice(0, 3000) });
+        }
+
+        // Render left content
+        for (const u of units) {
+            const div = document.createElement('div');
+            div.className = 'url-content-block';
+            if (u.type === 'heading') {
+                div.innerHTML = `<div class="url-h">${escHtml(u.text)}</div>`;
+            } else {
+                div.innerHTML = `<div class="url-p">${escHtml(u.text)}</div>`;
+            }
+            leftContent.appendChild(div);
+        }
+
+        // ── Right: title translation ──
+        const titleBlock = createTransBlock('제목', '<span class="spin"></span>번역 중…');
+        rightContent.appendChild(titleBlock);
+        try {
+            const t = await translateText(siteTitle);
+            fillTransBlock(titleBlock, '제목', `<strong>${t}</strong>`);
+        } catch {
+            fillTransBlock(titleBlock, '제목', `<strong>${escHtml(siteTitle)}</strong>`);
+        }
+
+        // ── Right: paragraph translations ──
+        for (let i = 0; i < units.length; i++) {
+            const pct = Math.round(((i + 1) / units.length) * 78) + 18;
+            setStatus(`단락 ${i + 1} / ${units.length} 번역 중…`, pct);
+
+            const block = createTransBlock(
+                units[i].type === 'heading' ? '제목' : `단락 ${i + 1}`,
+                '<span class="spin"></span>번역 중…'
+            );
+            rightContent.appendChild(block);
+
+            try {
+                const translated = await translateText(units[i].text);
+                const label = units[i].type === 'heading' ? '제목' : `단락 ${i + 1}`;
+                fillTransBlock(block, label,
+                    units[i].type === 'heading'
+                        ? `<strong>${translated}</strong>`
+                        : translated
+                );
+            } catch (e) {
+                fillTransBlock(block,
+                    units[i].type === 'heading' ? '제목' : `단락 ${i + 1}`,
+                    `<span style="color:#f87171">번역 실패</span>`
+                );
+            }
+        }
+    }
+
+    // ─── Translation helpers ──────────────────────────────────────────
+    async function translateText(text) {
+        if (!text || text.trim().length < 2) return text;
+        const chunks = chunkText(text.trim(), 450);
+        const parts  = [];
+        for (const chunk of chunks) {
+            parts.push(await callMyMemory(chunk));
+            if (chunks.length > 1) await sleep(320);
+        }
+        return parts.join(' ');
+    }
+
+    function chunkText(text, max) {
+        if (text.length <= max) return [text];
+        const out = [];
+        let start = 0;
+        while (start < text.length) {
+            let end = start + max;
+            if (end < text.length) {
+                const brk = Math.max(
+                    text.lastIndexOf('. ', end),
+                    text.lastIndexOf('? ', end),
+                    text.lastIndexOf('! ', end),
+                    text.lastIndexOf(' ',  end)
+                );
+                if (brk > start + 40) end = brk + 1;
+            }
+            out.push(text.slice(start, end).trim());
+            start = end;
+        }
+        return out.filter(Boolean);
+    }
+
+    async function callMyMemory(text) {
+        const params = new URLSearchParams({
+            q:        text,
+            langpair: 'en|ko',
+            de:       'yunician@gmail.com'
+        });
+        const resp = await fetch(`https://api.mymemory.translated.net/get?${params}`);
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+        const status = parseInt(data.responseStatus, 10);
+        if (status === 200 || status === 206) {
+            return data.responseData.translatedText;
+        }
+        throw new Error(data.responseDetails || '번역 API 오류');
+    }
+
+    // ─── UI helpers ───────────────────────────────────────────────────
+    function createTransBlock(label, innerHTML) {
+        const div  = document.createElement('div');
+        div.className = 'trans-block';
+        const lbl  = document.createElement('div');
+        lbl.className = 'trans-label';
+        lbl.textContent = label;
+        div.appendChild(lbl);
+        const body = document.createElement('div');
+        body.className = 'trans-body';
+        body.innerHTML = innerHTML;
+        div.appendChild(body);
+        return div;
+    }
+
+    function fillTransBlock(block, label, innerHTML) {
+        block.innerHTML = '';
+        const lbl = document.createElement('div');
+        lbl.className = 'trans-label';
+        lbl.textContent = label;
+        block.appendChild(lbl);
+        const body = document.createElement('div');
+        body.className = 'trans-body';
+        body.innerHTML = innerHTML;
+        block.appendChild(body);
+    }
+
+    function appendError(msg) {
+        const el = document.createElement('div');
+        el.style.cssText = 'padding:20px;color:#ef4444;font-size:0.88rem;';
+        el.textContent = '오류: ' + msg;
+        rightContent.appendChild(el);
+    }
+
+    function escHtml(str) {
+        return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    </script>
+</body>
+</html>
