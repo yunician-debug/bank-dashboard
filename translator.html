@@ -328,15 +328,15 @@
             <h1>한국어 번역기</h1>
             <p>PDF 파일 또는 URL을 업로드하면 한국어로 번역합니다</p>
         </div>
-        <div class="header-badge">Claude AI</div>
+        <div class="header-badge">DeepL Free</div>
     </div>
 
     <!-- API Key Bar -->
     <div class="apikey-bar" id="apikeyBar">
-        <span class="apikey-label">🔑 Anthropic API Key</span>
+        <span class="apikey-label">🔑 DeepL API Key</span>
         <input class="apikey-input" id="apikeyInput" type="password"
-               placeholder="sk-ant-api03-…  (입력 후 자동 저장됩니다)"/>
-        <a class="apikey-link" href="https://console.anthropic.com/settings/keys" target="_blank">키 발급 →</a>
+               placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx:fx  (입력 후 자동 저장됩니다)"/>
+        <a class="apikey-link" href="https://www.deepl.com/ko/pro-api" target="_blank">무료 키 발급 →</a>
     </div>
 
     <!-- Input Bar -->
@@ -400,13 +400,13 @@
     const apikeyBar      = document.getElementById('apikeyBar');
 
     // ─── API Key: load from localStorage ─────────────────────────────
-    const savedKey = localStorage.getItem('anthropic_api_key');
+    const savedKey = localStorage.getItem('deepl_api_key');
     if (savedKey) { apikeyInput.value = savedKey; apikeyBar.classList.add('ok'); }
 
     apikeyInput.addEventListener('input', () => {
         const v = apikeyInput.value.trim();
-        if (v) { localStorage.setItem('anthropic_api_key', v); apikeyBar.classList.add('ok'); }
-        else   { localStorage.removeItem('anthropic_api_key'); apikeyBar.classList.remove('ok'); }
+        if (v) { localStorage.setItem('deepl_api_key', v); apikeyBar.classList.add('ok'); }
+        else   { localStorage.removeItem('deepl_api_key'); apikeyBar.classList.remove('ok'); }
     });
 
     // ─── File input ───────────────────────────────────────────────────
